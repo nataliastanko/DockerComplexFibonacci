@@ -1,0 +1,48 @@
+version: '3'
+services:
+  postgres:
+    # from docker hub https://hub.docker.com/_/postgres
+    image: 'postgres:latest'
+    # start a postgres instance
+    # docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+  redis:
+    image: 'redis:latest'
+  api:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment: 
+      - REDIS_HOST=redis # use names of services as values
+      - REDIS_PORT=6379 #default value
+      - PGUSER= postgres #default
+      - PGHOST=postgres  #default
+      - PGDATABASE=postgres #default
+      - PGPASSWORD=postgres_password #default
+      - PGPORT=5432 #default
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client 
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+    environment:
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3050:80'
