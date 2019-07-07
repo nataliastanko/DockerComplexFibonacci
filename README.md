@@ -31,6 +31,10 @@ Environment variables are created in the runtime, not stored in an docker image.
 
 Create ```default.conf``` which adds configuration rules to Nginx.
 
+##### Websocket connection
+
+Allow websocket connections in nginx conf.
+
 ***
 
 ***
