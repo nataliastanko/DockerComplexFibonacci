@@ -35,6 +35,15 @@ Create ```default.conf``` which adds configuration rules to Nginx.
 
 Allow websocket connections in nginx conf.
 
+#### Step 2.
+
+#### Test and deploy with Travis-CI and AWS Elastic Beanstalk
+
+Create production ```Dockerfile``` file.
+Create ```.travis.yml``` file.
+
+Push your docker images to your docker hub repos.
+
 ***
 
 ***
