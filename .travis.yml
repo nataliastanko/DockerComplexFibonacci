@@ -1,0 +1,37 @@
+language: generic
+sudo: required
+services:
+  - docker
+before_install:
+  # build docker image (tagged)
+  - docker build -t nataliastanko/docker-fib -f ./client/Dockerfile.dev ./client
+script: # must exits with 0
+  # - docker run nataliastanko/docker-fib npm test -- --coverage
+  - docker run -e CI=true nataliastanko/docker-fib npm test
+#   - docker run nataliastanko/docker-fib npm run test-coverage -- --coverage
+#   - docker run nataliastanko/docker-fib npm run test -- --coverage
+after_success:
+  - docker build -t nataliastanko/multi-client-fib ./client
+  - docker build -t nataliastanko/multi-server-fib ./server
+  - docker build -t nataliastanko/multi-nginx-fib ./nginx
+  - docker build -t nataliastanko/multi-worker-fib ./worker
+  # log in to docker cli via trais env vars
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # take created images and push them to docker hub
+  - docker push nataliastanko/multi-client-fib
+  - docker push nataliastanko/multi-server-fib
+  - docker push nataliastanko/multi-nginx-fib
+  - docker push nataliastanko/multi-worker-fib
+deploy:
+  provider: elasticbeanstalk # includes set of instructions
+  region: "us-east-2" 
+  app: "docker-react"
+  env: "DockerReact-env"
+  bucket_name: "elasticbeanstalk-us-east-2-866787115363" # Amazon S3 bucket
+  bucket_path: "docker-react" # same as app
+  on:
+    branch: master
+  # AWS IAM, create user
+  access_key_id: $AWS_ACCESS_KEY # travis env var key name
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
