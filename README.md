@@ -174,6 +174,12 @@ Create ```AWS_SECRET_KEY``` key with ```Secret access key``` value.
 
 DO NOT DISPLAY VALUE IN BUILD LOG.
 
+#### If health status it not OK
+
+* Check logs in EB
+
+#### Re-deploying application
+
 ***
 
 ***
