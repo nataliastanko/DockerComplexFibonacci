@@ -22,16 +22,16 @@ after_success:
   - docker push nataliastanko/multi-server-fib
   - docker push nataliastanko/multi-nginx-fib
   - docker push nataliastanko/multi-worker-fib
-# deploy:
-#   provider: elasticbeanstalk # includes set of instructions
-#   region: "us-east-2" 
-#   app: "docker-react"
-#   env: "DockerReact-env"
-#   bucket_name: "elasticbeanstalk-us-east-2-866787115363" # Amazon S3 bucket
-#   bucket_path: "docker-react" # same as app
-#   on:
-#     branch: master
-#   # AWS IAM, create user
-#   access_key_id: $AWS_ACCESS_KEY # travis env var key name
-#   secret_access_key:
-#     secure: "$AWS_SECRET_KEY"
+deploy:
+  provider: elasticbeanstalk # includes set of instructions
+  region: "us-east-2"
+  app: "multi-docker"
+  env: "MultiDocker-env"
+  bucket_name: "elasticbeanstalk-us-east-2-866787115363" # Amazon S3 bucket
+  bucket_path: "multi-docker" # same as app
+  on:
+    branch: master
+  # AWS IAM, create user
+  access_key_id: $AWS_ACCESS_KEY # travis env var key name
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"

@@ -1,0 +1,38 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "__comment": "name for this container, image to use, hostname is docker-compose service container name, hostname is needed only if we need to directly access the service, at least one service must be essential true",
+      "name": "client",
+      "image": "nataliastanko/multi-client-fib",
+      "hostname": "client",
+      "essential": false
+    },
+    {
+      "name": "server",
+      "image": "nataliastanko/multi-server-fib",
+      "hostname": "api",
+      "essential": false
+    },
+    {
+      "name": "worker",
+      "image": "nataliastanko/multi-worker-fib",
+      "essential": false
+    },
+    {
+      "name": "nginx",
+      "image": "nataliastanko/multi-nginx-fib",
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": [
+        "client",
+        "server"
+      ]
+    }
+  ]
+}
