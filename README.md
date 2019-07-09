@@ -80,19 +80,19 @@ You get it (one default) in each of very specific different regions in EB AWS.
 In dev env we had Redis and Postgres containers.
 In prod env we are going to use:
 
-* AWS Elasti Cache instead of Redis (EC)
+* AWS ElastiCache instead of Redis
 * AWS Relational Database Service (RDS)
 
 in Elastic Beanstalk (EB) instance.
 
-###### Why AWS EC and AWS RDS
+###### Why AWS ElastiCache and AWS RDS
 
 * Super easy to scale
 * Built in logging + maintenance
 * Probably better security than what we can do
 * Easier to migrate off of EB with
 
-###### Why AWS EC
+###### Why AWS ElastiCache
 
 * Automatically creates and maintains Redis instances for you, you dont have to be a Redis specialist
 
@@ -115,18 +115,18 @@ Fill in:
 Key names need to be equal to your ```docker-compose.yml``` ```api.environment``` config.
 Values can be different than set up in ```docker-compose.yml```.
 
-###### EC
+###### ElastiCache
 
-Create Redis database cluster in Amazon EC (Cluster Mode disabled).
+Create Redis database cluster in Amazon ElastiCache (Cluster Mode disabled).
 Change Node type to t2 cache.t2.micro (low performance, the cheapest) and Number of replicas to 0. Check subnets. Save with default VPC region number.
 
 ###### Security Group
 
-To get services (EB, RDS, EC) connect with each other we need to create a security group (firewall rules) in AWS, which is: allow any traffic from any other AWS service that has this security group.
+To get services (EB, RDS, ElastiCache) connect with each other we need to create a security group (firewall rules) in AWS, which is: allow any traffic from any other AWS service that has this security group.
 
 Create a new Security Group from VPC service dashboard. Save with default VPC region number. Edit Inbound Rule for this group. Rule type: Custom TCP Rule, Port Range 5432-6379, Source Custom - just created security Group ID.
 
-Now apply the security group ID to each of 3 services: EB, RDS, EC:
+Now apply the security group ID to each of 3 services: EB, RDS, ElastiCache:
 
 * In Redis AWS:Modify:VPC Security Groups.
 * In Amazon RDS:AWS Modify:Network & Security:Security group:Apply immediately.
@@ -139,7 +139,7 @@ Go to Elastic Beanstalk Service:Configuration:Software:Modify:Environment proper
 
 We add key names with **URL endpoints** values:
 
-* REDIS_HOST - Open EC in a new tab:Redis:Description:Primary Endpoint, use this (without a port)
+* REDIS_HOST - Open ElastiCache in a new tab:Redis:Description:Primary Endpoint, use this (without a port)
 * REDIS_PORT - the port from above
 * PGHOST - Open RDS AWS in a new tab:Connect(ivity):Endpoint, use this
 * PGPORT - Open RDS AWS in a new tab:Connect(ivity):Port, use this
@@ -179,6 +179,26 @@ DO NOT DISPLAY VALUE IN BUILD LOG.
 * Check logs in EB
 
 #### Re-deploying application
+
+#### Cleaning Up AWS Resources
+
+to not get charged.
+
+We need to clean:
+
+* Elastic Beanstak - AWS Elastic Beanstak dashboard:[project]:Actions:Delete application
+* ElastiCache - AWS ElastiCache dashboard:Redis:[project]:Delete
+* RDS - AWS RDS dashboard:[project]:Modify:Deletion protection:Uncheck, then AWS RDS dashboard:[project]:Actions:Delete
+
+***Security groups*** do not have to be deleted, but here is the way:
+
+AWS VPC dashboard:Security Groups:check ALL groups connected to your app (leave the default):Actions:Delete
+
+If not successful, try in a few minutes again.
+
+If still not successful, remove Security Group Inbound Rules, then attempt to delete Security Group.
+
+***IAM*** dashboard:Users:Delete
 
 ***
 
