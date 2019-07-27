@@ -103,7 +103,7 @@ in Elastic Beanstalk (EB) instance.
 
 ###### RDS
 
-Configure in the same region where EB has been creted.
+Configure in the same region where EB has been created.
 
 Create database in Amazon RDS, type PostgreSQL.
 Fill in:
@@ -186,7 +186,7 @@ to not get charged.
 
 We need to clean:
 
-* Elastic Beanstak - AWS Elastic Beanstak dashboard:[project]:Actions:Delete application
+* Elastic Beanstalk - AWS Elastic Beanstalk dashboard:[project]:Actions:Delete application
 * ElastiCache - AWS ElastiCache dashboard:Redis:[project]:Delete
 * RDS - AWS RDS dashboard:[project]:Modify:Deletion protection:Uncheck, then AWS RDS dashboard:[project]:Actions:Delete
 
